@@ -23,6 +23,7 @@ public class Examination {
     private List<MedicalTestType> _medicalTestTypes = new LinkedList<MedicalTestType>();
     private String _results;
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SeqGen")
     @SequenceGenerator(name = "SeqGen", sequenceName = "SEQ_EXAMINATION", allocationSize = 1)
