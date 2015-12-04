@@ -40,7 +40,7 @@ public class DoctorRestController {
             }
             else {
                 doctor.getSpecializations();
-                entity = new ResponseEntity<DoctorVO>(doctor, new HttpHeaders(), HttpStatus.FOUND);
+                entity = new ResponseEntity<DoctorVO>(doctor, new HttpHeaders(), HttpStatus.OK);
 
             }
         }
@@ -57,7 +57,7 @@ public class DoctorRestController {
         ResponseEntity<List<DoctorVO>> entity = null;
         try {
             List<DoctorVO> doctors = doctorService.list();
-            entity = new ResponseEntity<List<DoctorVO>>(doctors, new HttpHeaders(), HttpStatus.FOUND);
+            entity = new ResponseEntity<List<DoctorVO>>(doctors, new HttpHeaders(), HttpStatus.OK);
         }
         catch (Exception e) {
             entity = new ResponseEntity<List<DoctorVO>>(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);

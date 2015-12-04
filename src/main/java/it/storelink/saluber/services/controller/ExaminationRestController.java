@@ -38,7 +38,7 @@ public class ExaminationRestController {
                 entity = new ResponseEntity<Examination>(null, new HttpHeaders(), HttpStatus.NOT_FOUND);
             }
             else {
-                entity = new ResponseEntity<Examination>(examination, new HttpHeaders(), HttpStatus.FOUND);
+                entity = new ResponseEntity<Examination>(examination, new HttpHeaders(), HttpStatus.OK);
             }
         }
         catch (Exception e) {
@@ -53,7 +53,7 @@ public class ExaminationRestController {
         ResponseEntity<List<ExaminationVO>> entity;
         try {
             List<ExaminationVO> examinations = examinationService.list();
-            entity = new ResponseEntity<List<ExaminationVO>>(examinations, new HttpHeaders(), HttpStatus.FOUND);
+            entity = new ResponseEntity<List<ExaminationVO>>(examinations, new HttpHeaders(), HttpStatus.OK);
         }
         catch (Exception e) {
             entity = new ResponseEntity<List<ExaminationVO>>(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -73,7 +73,7 @@ public class ExaminationRestController {
             }
             else {
                 Long id = examinationService.save(examination);
-                entity = new ResponseEntity<Long>(id, new HttpHeaders(), HttpStatus.FOUND);
+                entity = new ResponseEntity<Long>(id, new HttpHeaders(), HttpStatus.OK);
             }
         }
         catch (Exception e) {

@@ -37,7 +37,7 @@ public class PatientRestController {
                 entity = new ResponseEntity<Patient>(null, new HttpHeaders(), HttpStatus.NOT_FOUND);
             }
             else {
-                entity = new ResponseEntity<Patient>(patient, new HttpHeaders(), HttpStatus.FOUND);
+                entity = new ResponseEntity<Patient>(patient, new HttpHeaders(), HttpStatus.OK);
             }
         }
         catch (Exception e) {
@@ -53,7 +53,7 @@ public class PatientRestController {
         ResponseEntity<List<Patient>> entity = null;
         try {
             List<Patient> patients = patientService.list();
-            entity = new ResponseEntity<List<Patient>>(patients, new HttpHeaders(), HttpStatus.FOUND);
+            entity = new ResponseEntity<List<Patient>>(patients, new HttpHeaders(), HttpStatus.OK);
         }
         catch (Exception e) {
             entity = new ResponseEntity<List<Patient>>(null, new HttpHeaders(), HttpStatus.NOT_FOUND);

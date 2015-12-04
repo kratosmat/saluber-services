@@ -38,7 +38,7 @@ public class StationRestController {
                 entity = new ResponseEntity<Station>(null, new HttpHeaders(), HttpStatus.NOT_FOUND);
             }
             else {
-                entity = new ResponseEntity<Station>(station, new HttpHeaders(), HttpStatus.FOUND);
+                entity = new ResponseEntity<Station>(station, new HttpHeaders(), HttpStatus.OK);
             }
         }
         catch (Exception e) {
@@ -54,7 +54,7 @@ public class StationRestController {
         ResponseEntity<List<Station>> entity = null;
         try {
             List<Station> stations = stationService.list();
-            entity = new ResponseEntity<List<Station>>(stations, new HttpHeaders(), HttpStatus.FOUND);
+            entity = new ResponseEntity<List<Station>>(stations, new HttpHeaders(), HttpStatus.OK);
         }
         catch (Exception e) {
             entity = new ResponseEntity<List<Station>>(null, new HttpHeaders(), HttpStatus.NOT_FOUND);
