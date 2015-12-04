@@ -1,10 +1,5 @@
 package it.storelink.saluber.services.controller;
 
-import it.storelink.saluber.services.dao.BookingDAO;
-import it.storelink.saluber.services.dao.DoctorDAO;
-import it.storelink.saluber.services.dao.PatientDAO;
-import it.storelink.saluber.services.dao.StationDAO;
-import it.storelink.saluber.services.model.*;
 import it.storelink.saluber.services.service.BookingService;
 import it.storelink.saluber.services.vo.BookingVO;
 import org.apache.commons.logging.Log;
@@ -12,10 +7,8 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,33 +29,33 @@ public class BookingRestController {
     }
 
     @RequestMapping("/{bookingId}")
-    public ResponseEntity<Booking> booking(@PathVariable Long bookingId) {
-        ResponseEntity<Booking> entity;
+    public ResponseEntity<BookingVO> booking(@PathVariable Long bookingId) {
+        ResponseEntity<BookingVO> entity;
         try {
-            Booking booking = bookingService.findById(bookingId);
+            BookingVO booking = bookingService.findById(bookingId);
             if(booking==null) {
-                entity = new ResponseEntity<Booking>(null, new HttpHeaders(), HttpStatus.NOT_FOUND);
+                entity = new ResponseEntity<BookingVO>(null, new HttpHeaders(), HttpStatus.NOT_FOUND);
             }
             else {
-                entity = new ResponseEntity<Booking>(booking, new HttpHeaders(), HttpStatus.FOUND);
+                entity = new ResponseEntity<BookingVO>(booking, new HttpHeaders(), HttpStatus.OK);
             }
         }
         catch (Exception e) {
-            entity = new ResponseEntity<Booking>(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
+            entity = new ResponseEntity<BookingVO>(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return entity;
     }
 
     @RequestMapping("/list")
-    public ResponseEntity<List<Booking>> bookings() {
+    public ResponseEntity<List<BookingVO>> bookings() {
 
-        ResponseEntity<List<Booking>> entity;
+        ResponseEntity<List<BookingVO>> entity;
         try {
-            List<Booking> bookings = bookingService.list();
-            entity = new ResponseEntity<List<Booking>>(bookings, new HttpHeaders(), HttpStatus.FOUND);
+            List<BookingVO> bookings = bookingService.list();
+            entity = new ResponseEntity<List<BookingVO>>(bookings, new HttpHeaders(), HttpStatus.OK);
         }
         catch (Exception e) {
-            entity = new ResponseEntity<List<Booking>>(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
+            entity = new ResponseEntity<List<BookingVO>>(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
             LOG.error(e);
         }
 
@@ -89,17 +82,5 @@ public class BookingRestController {
         return entity;
     }
 
-    /*
-    @RequestMapping(value = "/message", method = RequestMethod.POST, consumes = "application/json")
-    public ResponseEntity<Message> update(@RequestBody Message message) {
-
-        if (message != null) {
-            message.setEta(message.getEta() + 100);
-        }
-
-        // TODO: call persistence layer to update
-        return new ResponseEntity<Message>(message, HttpStatus.OK);
-    }
-    */
 
 }

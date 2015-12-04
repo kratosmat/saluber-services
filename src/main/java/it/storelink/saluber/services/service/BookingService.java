@@ -1,6 +1,7 @@
 package it.storelink.saluber.services.service;
 
 import it.storelink.saluber.services.dao.*;
+import it.storelink.saluber.services.helper.BookingHelper;
 import it.storelink.saluber.services.model.*;
 import it.storelink.saluber.services.vo.BookingVO;
 import org.apache.commons.logging.Log;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.LinkedList;
 import java.util.List;
 
 @Service
@@ -53,9 +55,15 @@ public class BookingService {
     }
 
     @Transactional
-    public List<Booking> list() throws BusinessException {
+    public List<BookingVO> list() throws BusinessException {
+        List<BookingVO> bookingVOs = new LinkedList<BookingVO>();
         try {
-            return bookingDAO.list();
+            List<Booking> bookings = bookingDAO.list();
+            for (Booking booking : bookings) {
+                BookingVO bookingVO = BookingHelper.entity2VO(booking);
+                bookingVOs.add(bookingVO);
+            }
+            return bookingVOs;
         }
         catch (Exception e) {
             LOG.error(e.getMessage(), e);
@@ -64,9 +72,9 @@ public class BookingService {
     }
 
     @Transactional
-    public Booking findById(Long id) throws BusinessException {
+    public BookingVO findById(Long id) throws BusinessException {
         try {
-            return bookingDAO.find(id);
+            return BookingHelper.entity2VO(bookingDAO.find(id));
         }
         catch (Exception e) {
             LOG.error(e.getMessage(), e);
@@ -78,9 +86,7 @@ public class BookingService {
     public Long save(BookingVO booking) throws BusinessException {
         Booking entBooking;
         try {
-            entBooking = new Booking();
-            //entBooking.setId(booking.getId());
-            entBooking.setDateStart(booking.getDateStart());
+            entBooking = BookingHelper.vo2Entity(booking);
 
             Doctor doctor = doctorDAO.find(booking.getDoctorId());
             entBooking.setDoctor(doctor);
@@ -93,7 +99,6 @@ public class BookingService {
 
             Specialization specialization = specializationDAO.find(booking.getSpecializationId());
             entBooking.setSpecialization(specialization);
-
 
             bookingDAO.save(entBooking);
         }

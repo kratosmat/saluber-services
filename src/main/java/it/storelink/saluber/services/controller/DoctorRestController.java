@@ -1,7 +1,8 @@
 package it.storelink.saluber.services.controller;
 
-import it.storelink.saluber.services.dao.DoctorDAO;
 import it.storelink.saluber.services.model.Doctor;
+import it.storelink.saluber.services.service.DoctorService;
+import it.storelink.saluber.services.vo.DoctorVO;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,50 +20,51 @@ import java.util.List;
 @RequestMapping("/doctor")
 public class DoctorRestController {
 
-    @Autowired
-    private DoctorDAO doctorDAO;
-
     private Log LOG = LogFactory.getLog(DoctorRestController.class);
 
-    public void setDoctorDAO(DoctorDAO doctorDAO){
-        this.doctorDAO = doctorDAO;
+    @Autowired
+    private DoctorService doctorService;
+
+    public void setDoctorService(DoctorService doctorService) {
+        this.doctorService = doctorService;
     }
 
     @RequestMapping("/{doctorId}")
     @Transactional
-    public ResponseEntity<Doctor> doctor(@PathVariable Long doctorId) {
-        ResponseEntity<Doctor> entity = null;
+    public ResponseEntity<DoctorVO> doctor(@PathVariable Long doctorId) {
+        ResponseEntity<DoctorVO> entity = null;
         try {
-            Doctor doctor = doctorDAO.find(doctorId);
+            DoctorVO doctor = doctorService.findById(doctorId);
             if(doctor==null) {
-                entity = new ResponseEntity<Doctor>(null, new HttpHeaders(), HttpStatus.NOT_FOUND);
+                entity = new ResponseEntity<DoctorVO>(null, new HttpHeaders(), HttpStatus.NOT_FOUND);
             }
             else {
                 doctor.getSpecializations();
-                entity = new ResponseEntity<Doctor>(doctor, new HttpHeaders(), HttpStatus.FOUND);
+                entity = new ResponseEntity<DoctorVO>(doctor, new HttpHeaders(), HttpStatus.FOUND);
 
             }
         }
         catch (Exception e) {
-            entity = new ResponseEntity<Doctor>(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
+            entity = new ResponseEntity<DoctorVO>(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return entity;
     }
 
     @RequestMapping("/list")
     @Transactional
-    public ResponseEntity<List<Doctor>> doctors() {
+    public ResponseEntity<List<DoctorVO>> doctors() {
 
-        ResponseEntity<List<Doctor>> entity = null;
+        ResponseEntity<List<DoctorVO>> entity = null;
         try {
-            List<Doctor> doctors = doctorDAO.list();
-            entity = new ResponseEntity<List<Doctor>>(doctors, new HttpHeaders(), HttpStatus.FOUND);
+            List<DoctorVO> doctors = doctorService.list();
+            entity = new ResponseEntity<List<DoctorVO>>(doctors, new HttpHeaders(), HttpStatus.FOUND);
         }
         catch (Exception e) {
-            entity = new ResponseEntity<List<Doctor>>(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
+            entity = new ResponseEntity<List<DoctorVO>>(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
             LOG.error(e);
         }
 
         return entity;
     }
+
 }

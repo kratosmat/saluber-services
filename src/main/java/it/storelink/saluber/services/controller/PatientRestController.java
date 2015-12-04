@@ -1,7 +1,7 @@
 package it.storelink.saluber.services.controller;
 
-import it.storelink.saluber.services.dao.PatientDAO;
 import it.storelink.saluber.services.model.Patient;
+import it.storelink.saluber.services.service.PatientService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +18,13 @@ import java.util.List;
 @RequestMapping("/patient")
 public class PatientRestController {
 
-    @Autowired
-    private PatientDAO patientDAO;
-
     private Log LOG = LogFactory.getLog(PatientRestController.class);
 
-    public void setPatientDAO(PatientDAO patientDAO){
-        this.patientDAO = patientDAO;
+    @Autowired
+    private PatientService patientService;
+
+    public void setPatientService(PatientService patientService){
+        this.patientService = patientService;
     }
 
     @RequestMapping("/{patientId}")
@@ -32,7 +32,7 @@ public class PatientRestController {
     public ResponseEntity<Patient> doctor(@PathVariable Long patientId) {
         ResponseEntity<Patient> entity = null;
         try {
-            Patient patient = patientDAO.find(patientId);
+            Patient patient = patientService.findById(patientId);
             if(patientId==null) {
                 entity = new ResponseEntity<Patient>(null, new HttpHeaders(), HttpStatus.NOT_FOUND);
             }
@@ -52,7 +52,7 @@ public class PatientRestController {
 
         ResponseEntity<List<Patient>> entity = null;
         try {
-            List<Patient> patients = patientDAO.list();
+            List<Patient> patients = patientService.list();
             entity = new ResponseEntity<List<Patient>>(patients, new HttpHeaders(), HttpStatus.FOUND);
         }
         catch (Exception e) {
@@ -62,4 +62,5 @@ public class PatientRestController {
 
         return entity;
     }
+
 }

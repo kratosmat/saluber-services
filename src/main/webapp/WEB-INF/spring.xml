@@ -54,6 +54,7 @@
     <bean id="bookingDAO" class="it.storelink.saluber.services.dao.BookingDAO"/>
     <bean id="specializationDAO" class="it.storelink.saluber.services.dao.SpecializationDAO"/>
     <bean id="medicalTestDAO" class="it.storelink.saluber.services.dao.MedicalTestDAO"/>
+    <bean id="hospitalDAO" class="it.storelink.saluber.services.dao.HospitalDAO"/>
 
     <bean id="personService" class="it.storelink.saluber.services.service.BookingService" >
         <property name="bookingDAO" ref="bookingDAO"/>
@@ -67,6 +68,20 @@
         <property name="bookingDAO" ref="bookingDAO"/>
         <property name="medicalTestDAO" ref="medicalTestDAO"/>
         <property name="examinationDAO" ref="examinationDAO"/>
+    </bean>
+
+    <bean id="referenceEntityService" class="it.storelink.saluber.services.service.ReferenceEntityService" >
+        <property name="hospitalDAO" ref="hospitalDAO"/>
+        <property name="medicalTestDAO" ref="medicalTestDAO"/>
+        <property name="specializationDAO" ref="specializationDAO"/>
+    </bean>
+
+    <bean id="doctorService" class="it.storelink.saluber.services.service.DoctorService" >
+        <property name="doctorDAO" ref="doctorDAO"/>
+    </bean>
+
+    <bean id="patientService" class="it.storelink.saluber.services.service.PatientService" >
+        <property name="patientDAO" ref="patientDAO"/>
     </bean>
 
 </beans>
