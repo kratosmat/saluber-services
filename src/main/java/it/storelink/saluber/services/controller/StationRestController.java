@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/station")
+@RequestMapping("/api/station")
 public class StationRestController {
 
     private Log LOG = LogFactory.getLog(StationRestController.class);
@@ -42,6 +42,7 @@ public class StationRestController {
             }
         }
         catch (Exception e) {
+            LOG.error(e);
             entity = new ResponseEntity<Station>(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return entity;

@@ -1,6 +1,5 @@
 package it.storelink.saluber.services.controller;
 
-import it.storelink.saluber.services.model.Doctor;
 import it.storelink.saluber.services.service.DoctorService;
 import it.storelink.saluber.services.vo.DoctorVO;
 import org.apache.commons.logging.Log;
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/doctor")
+@RequestMapping("/api/doctor")
 public class DoctorRestController {
 
     private Log LOG = LogFactory.getLog(DoctorRestController.class);
@@ -45,6 +44,7 @@ public class DoctorRestController {
             }
         }
         catch (Exception e) {
+            LOG.error(e);
             entity = new ResponseEntity<DoctorVO>(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return entity;

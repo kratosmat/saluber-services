@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @Service
-@RequestMapping("/examination")
+@RequestMapping("/api/examination")
 public class ExaminationRestController {
 
 
@@ -42,6 +42,7 @@ public class ExaminationRestController {
             }
         }
         catch (Exception e) {
+            LOG.error(e);
             entity = new ResponseEntity<Examination>(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return entity;

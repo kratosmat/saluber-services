@@ -11,7 +11,7 @@
 
     <properties>
         <springframework.version>4.0.9.RELEASE</springframework.version>
-        <spring.security.version>4.0.1.RELEASE</spring.security.version>
+        <spring.security.version>3.2.5.RELEASE</spring.security.version>
         <hibernate.version>3.6.9.Final</hibernate.version>
     </properties>
 
@@ -66,7 +66,7 @@
         </dependency>
 
 
-        <!-- SPRING SECURITY
+        <!-- SPRING SECURITY-->
 
         <dependency>
             <groupId>org.springframework.security</groupId>
@@ -81,14 +81,8 @@
         <dependency>
             <groupId>org.springframework.security.oauth</groupId>
             <artifactId>spring-security-oauth2</artifactId>
-            <version>2.0.7.RELEASE</version>
+            <version>1.0.0.RELEASE</version>
         </dependency>
-        <dependency>
-            <groupId>it.uirnet.abs</groupId>
-            <artifactId>spring-oauth2-utils</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        -->
 
         <dependency>
             <groupId>log4j</groupId>

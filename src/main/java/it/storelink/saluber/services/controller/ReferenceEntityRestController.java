@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/reference")
+@RequestMapping("/api/reference")
 public class ReferenceEntityRestController {
 
     private Log LOG = LogFactory.getLog(ReferenceEntityRestController.class);
@@ -44,6 +44,7 @@ public class ReferenceEntityRestController {
             }
         }
         catch (Exception e) {
+            LOG.error(e);
             entity = new ResponseEntity<List<Hospital>>(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return entity;
@@ -65,6 +66,7 @@ public class ReferenceEntityRestController {
             }
         }
         catch (Exception e) {
+            LOG.error(e);
             entity = new ResponseEntity<List<MedicalTestType>>(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return entity;
@@ -87,6 +89,7 @@ public class ReferenceEntityRestController {
             }
         }
         catch (Exception e) {
+            LOG.error(e);
             entity = new ResponseEntity<List<Specialization>>(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return entity;
