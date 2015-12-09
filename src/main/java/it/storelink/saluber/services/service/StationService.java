@@ -1,14 +1,16 @@
 package it.storelink.saluber.services.service;
 
 import it.storelink.saluber.services.dao.StationDAO;
-import it.storelink.saluber.services.model.Patient;
+import it.storelink.saluber.services.helper.StationHelper;
 import it.storelink.saluber.services.model.Station;
+import it.storelink.saluber.services.vo.StationVO;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.LinkedList;
 import java.util.List;
 
 @Service
@@ -25,10 +27,15 @@ public class StationService {
     }
 
     @Transactional
-    public List<Station> list() throws BusinessException {
+    public List<StationVO> list() throws BusinessException {
+        List<StationVO> stationVOs = new LinkedList<StationVO>();
         try {
+
             List<Station> stations = stationDAO.list();
-            return stations;
+            for(Station station : stations) {
+                stationVOs.add(StationHelper.entity2VO(station));
+            }
+            return stationVOs;
         }
         catch (Exception e) {
             LOG.error(e.getMessage(), e);
@@ -37,9 +44,9 @@ public class StationService {
     }
 
     @Transactional
-    public Station findById(Long id) throws BusinessException {
+    public StationVO findById(Long id) throws BusinessException {
         try {
-            return stationDAO.find(id);
+            return StationHelper.entity2VO(stationDAO.find(id));
         }
         catch (Exception e) {
             LOG.error(e.getMessage(), e);
@@ -48,7 +55,7 @@ public class StationService {
     }
 
     @Transactional
-    public Long save(Patient patient) throws BusinessException {
+    public Long save(Station station) throws BusinessException {
         //TODO: implementare la logica del salvataggio
         return -1l;
     }

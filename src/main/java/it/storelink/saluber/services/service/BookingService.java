@@ -74,7 +74,9 @@ public class BookingService {
     @Transactional
     public BookingVO findById(Long id) throws BusinessException {
         try {
-            return BookingHelper.entity2VO(bookingDAO.find(id));
+            Booking booking = bookingDAO.find(id);
+            if(booking!=null) return BookingHelper.entity2VO(booking);
+            else return null;
         }
         catch (Exception e) {
             LOG.error(e.getMessage(), e);

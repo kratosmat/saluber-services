@@ -1,6 +1,4 @@
-package it.storelink.saluber.services.model;
-
-import javax.persistence.*;
+package it.storelink.saluber.services.vo;
 
 /**
  * User: kratos
@@ -8,20 +6,16 @@ import javax.persistence.*;
  * Time: 15.36
  */
 
-@Entity
-@Table(name = "STATION", catalog = "")
-public class Station {
+public class StationVO {
 
     private Long _id;
     private String _name;
     private String _completeAddress;
+    private String photo;
     private Double _lat;
     private Double _lon;
     private Integer _nRoom;
-    private String photo;
 
-    @Id
-    @Column(name = "ID", nullable = false, insertable = true, updatable = true, precision = -127)
     public Long getId() {
         return _id;
     }
@@ -30,8 +24,6 @@ public class Station {
         this._id = _id;
     }
 
-    @Basic
-    @Column(name = "NAME", nullable = true, insertable = true, updatable = true, length = 255)
     public String getName() {
         return _name;
     }
@@ -40,8 +32,6 @@ public class Station {
         this._name = name;
     }
 
-    @Basic
-    @Column(name = "ADDRESS", nullable = true, insertable = true, updatable = true, length = 500)
     public String getCompleteAddress() {
         return _completeAddress;
     }
@@ -50,8 +40,6 @@ public class Station {
         this._completeAddress = completeAddress;
     }
 
-    @Basic
-    @Column(name = "LAT", nullable = true, insertable = true, updatable = true)
     public Double getLat() {
         return _lat;
     }
@@ -60,8 +48,6 @@ public class Station {
         this._lat = lat;
     }
 
-    @Basic
-    @Column(name = "LON", nullable = true, insertable = true, updatable = true)
     public Double getLon() {
         return _lon;
     }
@@ -70,8 +56,6 @@ public class Station {
         this._lon = lon;
     }
 
-    @Basic
-    @Column(name = "NROOM", nullable = true, insertable = true, updatable = true)
     public Integer getNRoom() {
         return _nRoom;
     }
@@ -80,8 +64,6 @@ public class Station {
         this._nRoom = nRoom;
     }
 
-    @Basic
-    @Column(name = "PHOTO", nullable = true, insertable = true, updatable = true, length = 255)
     public String getPhoto() {
         return photo;
     }
@@ -89,4 +71,5 @@ public class Station {
     public void setPhoto(String photo) {
         this.photo = photo;
     }
+
 }

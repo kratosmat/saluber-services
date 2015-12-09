@@ -91,6 +91,9 @@
 
     <bean id="calendarService" class="it.storelink.saluber.services.service.CalendarService" >
         <property name="monthDAO" ref="monthDAO"/>
+        <property name="dayDAO" ref="dayDAO"/>
+        <property name="slotDAO" ref="slotDAO"/>
+        <property name="userDAO" ref="userDAO"/>
     </bean>
 
     <bean id="userService" class="it.storelink.saluber.services.service.UserService">

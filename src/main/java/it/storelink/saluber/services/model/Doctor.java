@@ -28,6 +28,8 @@ public class Doctor {
     private Set<Hospital> _hospitals;
     private String _cv;
 
+    private String photo;
+
     @Id
     //@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SeqGen")
     //@SequenceGenerator(name = "SeqGen", sequenceName = "SEQ_DOCTOR", allocationSize = 1)
@@ -120,4 +122,13 @@ public class Doctor {
         this._cv = cv;
     }
 
+    @Basic
+    @Column(name = "PHOTO", nullable = true, insertable = true, updatable = true, length = 255)
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
 }

@@ -19,6 +19,7 @@ public class DoctorVO {
     private String _phone;
     private String _doctorId;
     private String _cv;
+    private String photo;
     private Set<Long> _specializations = new LinkedHashSet<Long>();
     private Set<Long> _hospitals = new LinkedHashSet<Long>();
 
@@ -85,4 +86,11 @@ public class DoctorVO {
         this._cv = cv;
     }
 
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
 }

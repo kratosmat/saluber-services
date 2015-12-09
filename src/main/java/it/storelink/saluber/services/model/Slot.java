@@ -1,6 +1,8 @@
 package it.storelink.saluber.services.model;
 
 
+import org.hibernate.annotations.Type;
+
 import javax.persistence.*;
 
 /**
@@ -16,6 +18,7 @@ public class Slot {
     private Day _day;
     private String _start;
     private String _end;
+    private Boolean _selected;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SeqGen")
@@ -49,7 +52,7 @@ public class Slot {
         this._end = end;
     }
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="DAY")
     public Day getDay() {
         return _day;
@@ -59,4 +62,13 @@ public class Slot {
         this._day = day;
     }
 
+    @Column(name = "SELECTED")
+    @Type(type = "org.hibernate.type.NumericBooleanType")
+    public Boolean getSelected() {
+        return _selected;
+    }
+
+    public void setSelected(Boolean selected) {
+        this._selected = selected;
+    }
 }

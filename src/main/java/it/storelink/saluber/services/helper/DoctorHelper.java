@@ -28,6 +28,7 @@ public class DoctorHelper {
         vo.setCv(entity.getCv());
         vo.setDoctorId(entity.getDoctorId());
         vo.setPhone(entity.getPhone());
+        vo.setPhoto(entity.getPhoto());
         for (Hospital hospital : entity.getHospitals()) {
             vo.getHospitals().add(hospital.getId());
         }

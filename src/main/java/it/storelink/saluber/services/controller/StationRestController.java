@@ -2,6 +2,7 @@ package it.storelink.saluber.services.controller;
 
 import it.storelink.saluber.services.model.Station;
 import it.storelink.saluber.services.service.StationService;
+import it.storelink.saluber.services.vo.StationVO;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,35 +31,35 @@ public class StationRestController {
 
     @RequestMapping("/{stationId}")
     @Transactional
-    public ResponseEntity<Station> station(@PathVariable Long stationId) {
-        ResponseEntity<Station> entity = null;
+    public ResponseEntity<StationVO> station(@PathVariable Long stationId) {
+        ResponseEntity<StationVO> entity = null;
         try {
-            Station station = stationService.findById(stationId);
+            StationVO station = stationService.findById(stationId);
             if(station==null) {
-                entity = new ResponseEntity<Station>(null, new HttpHeaders(), HttpStatus.NOT_FOUND);
+                entity = new ResponseEntity<StationVO>(null, new HttpHeaders(), HttpStatus.NOT_FOUND);
             }
             else {
-                entity = new ResponseEntity<Station>(station, new HttpHeaders(), HttpStatus.OK);
+                entity = new ResponseEntity<StationVO>(station, new HttpHeaders(), HttpStatus.OK);
             }
         }
         catch (Exception e) {
             LOG.error(e);
-            entity = new ResponseEntity<Station>(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
+            entity = new ResponseEntity<StationVO>(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return entity;
     }
 
     @RequestMapping("/list")
     @Transactional
-    public ResponseEntity<List<Station>> patients() {
+    public ResponseEntity<List<StationVO>> stations() {
 
-        ResponseEntity<List<Station>> entity = null;
+        ResponseEntity<List<StationVO>> entity = null;
         try {
-            List<Station> stations = stationService.list();
-            entity = new ResponseEntity<List<Station>>(stations, new HttpHeaders(), HttpStatus.OK);
+            List<StationVO> stations = stationService.list();
+            entity = new ResponseEntity<List<StationVO>>(stations, new HttpHeaders(), HttpStatus.OK);
         }
         catch (Exception e) {
-            entity = new ResponseEntity<List<Station>>(null, new HttpHeaders(), HttpStatus.NOT_FOUND);
+            entity = new ResponseEntity<List<StationVO>>(null, new HttpHeaders(), HttpStatus.NOT_FOUND);
             LOG.error(e);
         }
 

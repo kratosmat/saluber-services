@@ -1,16 +1,15 @@
 package it.storelink.saluber.services.controller;
 
-import it.storelink.saluber.services.model.Month;
 import it.storelink.saluber.services.service.CalendarService;
+import it.storelink.saluber.services.vo.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/calendar")
@@ -25,22 +24,108 @@ public class CalendarRestController {
         this.calendarService = calendarService;
     }
 
-    @RequestMapping("/month/{yearNumber}/{monthNumber}")
-    public ResponseEntity<Month> month(@PathVariable Integer yearNumber, @PathVariable Integer monthNumber) {
-        ResponseEntity<Month> entity = null;
-        try {
 
-            Month month = calendarService.month(yearNumber, monthNumber);
+    @RequestMapping("/month/{yearNumber}/{monthNumber}")
+    public ResponseEntity<MonthVO> month(@PathVariable Integer yearNumber, @PathVariable Integer monthNumber) {
+        ResponseEntity<MonthVO> entity;
+        try {
+            ExtendedUser user = (ExtendedUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            MonthVO month = null;
+            if(user.hasAuthority("doctor")) {
+                month = calendarService.readOrCreate(yearNumber, monthNumber, "DOCTOR", user.getOrganization());
+            }
+            if(user.hasAuthority("station_manager")) {
+                month = calendarService.readOrCreate(yearNumber, monthNumber, "STATION", user.getOrganization());
+            }
 
             if(month==null) {
-                entity = new ResponseEntity<Month>(null, new HttpHeaders(), HttpStatus.NOT_FOUND);
+                entity = new ResponseEntity<MonthVO>(null, new HttpHeaders(), HttpStatus.NOT_FOUND);
             }
             else {
-                entity = new ResponseEntity<Month>(month, new HttpHeaders(), HttpStatus.OK);
+                entity = new ResponseEntity<MonthVO>(month, new HttpHeaders(), HttpStatus.OK);
             }
         }
         catch (Exception e) {
-            entity = new ResponseEntity<Month>(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
+            entity = new ResponseEntity<MonthVO>(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
+            LOG.error(e);
+        }
+        return entity;
+    }
+
+    @RequestMapping(value = "/save_month", method = RequestMethod.POST, consumes = "application/json")
+    public ResponseEntity<Long> saveMonth(@RequestBody MonthVO monthVO) {
+        ResponseEntity<Long> entity;
+        Long month_id;
+        try {
+            ExtendedUser user = (ExtendedUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+            if(!user.hasAuthority("doctor") || !user.hasAuthority("station_manager"))
+                return new ResponseEntity<Long>(null, new HttpHeaders(), HttpStatus.NOT_FOUND);
+
+            month_id = calendarService.update(monthVO);
+
+            if(month_id==null) {
+                entity = new ResponseEntity<Long>(null, new HttpHeaders(), HttpStatus.NOT_FOUND);
+            }
+            else {
+                entity = new ResponseEntity<Long>(month_id, new HttpHeaders(), HttpStatus.OK);
+            }
+        }
+        catch (Exception e) {
+            entity = new ResponseEntity<Long>(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
+            LOG.error(e);
+        }
+        return entity;
+    }
+
+    @RequestMapping("/month_availability/{yearNumber}/{monthNumber}/{doctorId}/{stationId}")
+    public ResponseEntity<MonthVO> monthAvailability(
+            @PathVariable Integer yearNumber,
+            @PathVariable Integer monthNumber,
+            @PathVariable Long doctorId,
+            @PathVariable Long stationId) {
+
+        ResponseEntity<MonthVO> entity;
+        try {
+            ExtendedUser user = (ExtendedUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            MonthVO month = null;
+            if(user.hasAuthority("patient")) {
+                month = calendarService.readAvailability(yearNumber, monthNumber, doctorId, stationId);
+            }
+            if(month==null) {
+                entity = new ResponseEntity<MonthVO>(null, new HttpHeaders(), HttpStatus.NOT_FOUND);
+            }
+            else {
+                entity = new ResponseEntity<MonthVO>(month, new HttpHeaders(), HttpStatus.OK);
+            }
+        }
+        catch (Exception e) {
+            entity = new ResponseEntity<MonthVO>(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
+            LOG.error(e);
+        }
+        return entity;
+    }
+
+    @RequestMapping(value = "/save_month_station", method = RequestMethod.POST, consumes = "application/json")
+    public ResponseEntity<Long> saveMonthStation(@RequestBody MonthVO monthVO) {
+        ResponseEntity<Long> entity;
+        Long month_id;
+        try {
+            ExtendedUser user = (ExtendedUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+            if(!user.hasAuthority("station_manager")) return new ResponseEntity<Long>(null, new HttpHeaders(), HttpStatus.NOT_FOUND);
+
+            month_id = calendarService.update(monthVO);
+
+            if(month_id==null) {
+                entity = new ResponseEntity<Long>(null, new HttpHeaders(), HttpStatus.NOT_FOUND);
+            }
+            else {
+                entity = new ResponseEntity<Long>(month_id, new HttpHeaders(), HttpStatus.OK);
+            }
+        }
+        catch (Exception e) {
+            entity = new ResponseEntity<Long>(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
             LOG.error(e);
         }
         return entity;

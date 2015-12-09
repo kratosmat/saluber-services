@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -73,7 +72,7 @@ public class BookingRestController {
             }
             else {
                 Long id = bookingService.save(booking);
-                entity = new ResponseEntity<Long>(id, new HttpHeaders(), HttpStatus.FOUND);
+                entity = new ResponseEntity<Long>(id, new HttpHeaders(), HttpStatus.OK);
             }
         }
         catch (Exception e) {

@@ -2,6 +2,7 @@ package it.storelink.saluber.services.model;
 
 
 import javax.persistence.*;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -15,7 +16,7 @@ import java.util.List;
 public class Day {
     private Long _id;
     private Integer _number;
-    private List<Slot> _slots;
+    private List<Slot> _slots = new LinkedList<Slot>();
     private Month _month;
 
     @Id
@@ -40,7 +41,8 @@ public class Day {
         this._number = number;
     }
 
-    @OneToMany(mappedBy="day")
+    @OneToMany(mappedBy="day", fetch = FetchType.LAZY)
+    @OrderBy("id ASC")
     public List<Slot> getSlots() {
         return _slots;
     }
@@ -49,7 +51,7 @@ public class Day {
         this._slots = slots;
     }
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="MONTH")
     public Month getMonth() {
         return _month;

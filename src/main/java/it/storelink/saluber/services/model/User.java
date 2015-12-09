@@ -18,6 +18,7 @@ public class User {
     private String identifier;
     private String firstName;
     private String lastName;
+    private Long organization;
     private List<Role> roles;
 
     @Id
@@ -80,4 +81,15 @@ public class User {
     public void setRoles(List<Role> roles) {
         this.roles = roles;
     }
+
+    @Basic
+    @Column(name = "ORGANIZATION", nullable = true, insertable = true, updatable = true)
+    public Long getOrganization() {
+        return organization;
+    }
+
+    public void setOrganization(Long organization) {
+        this.organization = organization;
+    }
+
 }

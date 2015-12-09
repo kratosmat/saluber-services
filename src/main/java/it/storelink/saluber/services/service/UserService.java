@@ -67,7 +67,8 @@ public class UserService implements UserDetailsService {
                         authorities,
                         user.getIdentifier(),
                         user.getFirstName(),
-                        user.getLastName());
+                        user.getLastName(),
+                        user.getOrganization());
 
                 return userDetails;
             }

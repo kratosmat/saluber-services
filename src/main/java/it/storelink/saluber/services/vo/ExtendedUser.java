@@ -17,6 +17,7 @@ public class ExtendedUser extends User {
     private String identifier;
     private String firstName;
     private String lastName;
+    private Long organization;
 
     public String getFirstName() {
         return firstName;
@@ -42,13 +43,23 @@ public class ExtendedUser extends User {
         this.identifier = identifier;
     }
 
-    public ExtendedUser(String username, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities,
-                        String personIdentifier, String firstName, String lastName) {
+    public Long getOrganization() {
+        return organization;
+    }
+
+    public void setOrganization(Long organization) {
+        this.organization = organization;
+    }
+
+    public ExtendedUser(String username, String password, boolean enabled, boolean accountNonExpired,
+                        boolean credentialsNonExpired, boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities,
+                        String personIdentifier, String firstName, String lastName, Long organization) {
         super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
 
         this.setIdentifier(personIdentifier);
         this.setFirstName(firstName);
         this.setLastName(lastName);
+        this.setOrganization(organization);
     }
 
     public boolean hasAuthority(String authority) {

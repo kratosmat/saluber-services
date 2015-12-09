@@ -2,6 +2,7 @@ package it.storelink.saluber.services.model;
 
 
 import javax.persistence.*;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -10,15 +11,17 @@ import java.util.List;
  * Time: 16.05
  */
 @Entity
-@Inheritance
-@DiscriminatorColumn(name="ROLE_TYPE")
+//@Inheritance
+//@DiscriminatorColumn(name="ROLE_TYPE")
 @Table(name="MONTHS")
-public abstract class Month {
+public class Month {
 
     private Long _id;
-    private String _month;
-    private String _year;
-    private List<Day> _days;
+    private Integer _month;
+    private Integer _year;
+    private Long organizationId;
+    private String type;
+    private List<Day> _days = new LinkedList<Day>();
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SeqGen")
@@ -33,31 +36,54 @@ public abstract class Month {
     }
 
     @Basic
-    @Column(name = "MONTH", nullable = true, insertable = true, updatable = true, length = 255)
-    public String getMonth() {
+    @Column(name = "MONTH", nullable = true, insertable = true, updatable = true)
+    public Integer getMonth() {
         return _month;
     }
 
-    public void setMonth(String month) {
+    public void setMonth(Integer month) {
         this._month = month;
     }
 
     @Basic
-    @Column(name = "YEAR", nullable = true, insertable = true, updatable = true, length = 255)
-    public String getYear() {
+    @Column(name = "YEAR", nullable = true, insertable = true, updatable = true)
+    public Integer getYear() {
         return _year;
     }
 
-    public void setYear(String year) {
+    public void setYear(Integer year) {
         this._year = year;
     }
 
-    @OneToMany(mappedBy="month")
+    @OneToMany(mappedBy="month", fetch = FetchType.LAZY)
+    @OrderBy("id ASC")
     public List<Day> getDays() {
         return _days;
     }
 
     public void setDays(List<Day> days) {
         this._days = days;
+    }
+
+
+
+    @Basic
+    @Column(name = "ORGANIZATION_ID", nullable = true, insertable = true, updatable = true)
+    public Long getOrganizationId() {
+        return organizationId;
+    }
+
+    public void setOrganizationId(Long organizationId) {
+        this.organizationId = organizationId;
+    }
+
+    @Basic
+    @Column(name = "TYPE", nullable = false, insertable = true, updatable = true, length = 255)
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }
