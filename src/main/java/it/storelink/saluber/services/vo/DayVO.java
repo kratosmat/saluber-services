@@ -13,7 +13,7 @@ import java.util.List;
 public class DayVO {
     private Long _id;
     private Integer _number;
-    private List<SlotVO> _slots = new LinkedList<SlotVO>();
+    private List<SlotBaseVO> _slots = new LinkedList<SlotBaseVO>();
     private Long _month;
 
 
@@ -33,11 +33,11 @@ public class DayVO {
         this._number = number;
     }
 
-    public List<SlotVO> getSlots() {
+    public List<SlotBaseVO> getSlots() {
         return _slots;
     }
 
-    public void setSlots(List<SlotVO> slots) {
+    public void setSlots(List<SlotBaseVO> slots) {
         this._slots = slots;
     }
 

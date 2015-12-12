@@ -3,10 +3,7 @@ package it.storelink.saluber.services.service;
 import it.storelink.saluber.services.dao.*;
 import it.storelink.saluber.services.helper.MonthHelper;
 import it.storelink.saluber.services.model.*;
-import it.storelink.saluber.services.vo.DayVO;
-import it.storelink.saluber.services.vo.ExtendedUser;
-import it.storelink.saluber.services.vo.MonthVO;
-import it.storelink.saluber.services.vo.SlotVO;
+import it.storelink.saluber.services.vo.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
+import java.util.*;
+import java.util.regex.Pattern;
 
 @Service
 public class CalendarService {
@@ -78,123 +74,6 @@ public class CalendarService {
         }
     }
 
-    /*
-    @Transactional
-    public MonthVO readOrCreateForDoctor(Integer yearNumber, Integer monthNumber, String username) throws BusinessException {
-        try {
-
-            MonthDoctor monthDoctor = (MonthDoctor) monthDAO.findByCriteria4Doctor(yearNumber, monthNumber, username);
-            if(monthDoctor==null) {
-                monthDoctor = new MonthDoctor();
-                Calendar calendar = new GregorianCalendar();
-                calendar.set(Calendar.YEAR, yearNumber);
-                //because calendar goes from 0 to 11
-                calendar.set(Calendar.MONTH, monthNumber - 1);
-
-                //because calendar goes from 0 to 30 max
-                int maximum_day = calendar.getActualMaximum(Calendar.DAY_OF_MONTH) + 1;
-
-                //Create Month
-
-                monthDoctor.setYear(yearNumber);
-                monthDoctor.setMonth(monthNumber);
-                monthDoctor.setUsername(username);
-
-                monthDAO.save(monthDoctor);
-
-                //List<Day> days = new LinkedList<Day>();
-                for (int i = 1; i < maximum_day; i++) {
-                    Day day = new Day();
-                    day.setMonth(monthDoctor);
-                    day.setNumber(i);
-                    monthDoctor.getDays().add(day);
-                    dayDAO.save(day);
-
-                    //List<Slot> slots = new LinkedList<Slot>();
-                    for (String slotLabel : slotLabels) {
-                        Slot slot = new Slot();
-                        slot.setDay(day);
-                        slot.setStart(slotLabel);
-                        slot.setSelected(false);
-
-                        //FIXME: aumentare di 30 minuti la fine dello slot
-                        slot.setEnd(slotLabel);
-                        day.getSlots().add(slot);
-                        slotDAO.save(slot);
-                    }
-                }
-            }
-
-            MonthVO monthVO = MonthHelper.entity2VO(monthDoctor);
-
-            return monthVO;
-        }
-        catch (Exception e) {
-            LOG.error(e.getMessage(), e);
-            throw new BusinessException(e);
-        }
-    }
-
-
-    @Transactional
-    public MonthVO readOrCreateForStation(Integer yearNumber, Integer monthNumber, Long organization) throws BusinessException {
-        try {
-
-            MonthStation monthStation = (MonthStation) monthDAO.findByCriteria4Station(yearNumber, monthNumber, organization);
-            if(monthStation==null) {
-                monthStation = new MonthStation();
-                Calendar calendar = new GregorianCalendar();
-                calendar.set(Calendar.YEAR, yearNumber);
-                //because calendar goes from 0 to 11
-                calendar.set(Calendar.MONTH, monthNumber - 1);
-
-                //because calendar goes from 0 to 30 max
-                int maximum_day = calendar.getActualMaximum(Calendar.DAY_OF_MONTH) + 1;
-
-                //Create Month
-
-                monthStation.setYear(yearNumber);
-                monthStation.setMonth(monthNumber);
-                //FIXME: usiamo l'id dell'organizzazione impropriamente
-                monthStation.setStationId(organization);
-
-                monthDAO.save(monthStation);
-
-                //List<Day> days = new LinkedList<Day>();
-                for (int i = 1; i < maximum_day; i++) {
-                    Day day = new Day();
-                    day.setMonth(monthStation);
-                    day.setNumber(i);
-                    monthStation.getDays().add(day);
-                    dayDAO.save(day);
-
-                    //List<Slot> slots = new LinkedList<Slot>();
-                    for (String slotLabel : slotLabels) {
-                        Slot slot = new Slot();
-                        slot.setDay(day);
-                        slot.setStart(slotLabel);
-                        slot.setSelected(false);
-
-                        //FIXME: aumentare di 30 minuti la fine dello slot
-                        slot.setEnd(slotLabel);
-                        day.getSlots().add(slot);
-                        slotDAO.save(slot);
-                    }
-                }
-            }
-
-            //FIXME: occhio, stiamo usando la classe astratta
-            MonthVO monthVO = MonthHelper.entity2VO(monthStation);
-
-            return monthVO;
-        }
-        catch (Exception e) {
-            LOG.error(e.getMessage(), e);
-            throw new BusinessException(e);
-        }
-    }
-    */
-
     @Transactional
     public MonthVO readOrCreate(Integer yearNumber, Integer monthNumber, String type, Long organization) throws BusinessException {
         try {
@@ -210,7 +89,6 @@ public class CalendarService {
                 int maximum_day = calendar.getActualMaximum(Calendar.DAY_OF_MONTH) + 1;
 
                 //Create Month
-
                 month.setYear(yearNumber);
                 month.setMonth(monthNumber);
                 month.setOrganizationId(organization);
@@ -228,14 +106,21 @@ public class CalendarService {
 
                     //List<Slot> slots = new LinkedList<Slot>();
                     for (String slotLabel : slotLabels) {
+
+
                         Slot slot = new Slot();
                         slot.setDay(day);
                         slot.setStart(slotLabel);
                         slot.setSelected(false);
 
                         //FIXME: aumentare di 30 minuti la fine dello slot
-                        slot.setEnd(slotLabel);
+                        String[] splits = slotLabel.split(Pattern.quote("."));
+                        calendar.set(Calendar.HOUR, Integer.valueOf(splits[0]));
+                        calendar.set(Calendar.MINUTE, Integer.valueOf(splits[1]));
+                        calendar.add(Calendar.MINUTE, 30);
+                        slot.setEnd(calendar.get(Calendar.HOUR) + "." + calendar.get(Calendar.MINUTE));
                         day.getSlots().add(slot);
+
                         slotDAO.save(slot);
                     }
                 }
@@ -258,17 +143,95 @@ public class CalendarService {
         try {
 
             Month monthStation = monthDAO.findByCriteria(yearNumber, monthNumber, "STATION", stationId);
-            if(monthStation==null) return null;
+            if(monthStation==null) {
+                LOG.error("La station: " + stationId + " non possiede un calendario per anno: " + yearNumber + " mese: " + monthNumber);
+                return null;
+            }
 
             Month monthDoctor = monthDAO.findByCriteria(yearNumber, monthNumber, "DOCTOR", doctorId);
-            if(monthDoctor==null) return null;
+            if(monthDoctor==null) {
+                LOG.error("Il doctor: " + doctorId + " non possiede un calendario per anno: " + yearNumber + " mese: " + monthNumber);
+                return null;
+            }
 
+
+
+            //Creazione hash per station
+            Map<String, Boolean> stationAvailability = new HashMap<String, Boolean>();
+            for (Day day : monthStation.getDays()) {
+
+                for (Slot slot : day.getSlots()) {
+                    String key = day.getNumber() + "_" + slot.getStart();
+                    stationAvailability.put(key, slot.getSelected());
+                }
+            }
+
+            //Creazione hash per doctor
+            Map<String, Boolean> doctorAvailability = new HashMap<String, Boolean>();
+            for (Day day : monthDoctor.getDays()) {
+                for (Slot slot : day.getSlots()) {
+                    String key = day.getNumber() + "_" + slot.getStart();
+                    doctorAvailability.put(key, slot.getSelected());
+                }
+            }
+
+            if(stationAvailability.size()!=doctorAvailability.size()) {
+                LOG.error("Differenza dimensione calendari, station: " + stationAvailability.size() + " doctor: " + doctorAvailability.size());
+                return null;
+            }
+
+            /*
+            for (String key : stationAvailability.keySet()) {
+                if(stationAvailability.get(key) && doctorAvailability.get(key)) {
+                    //disponibilità di entrambe
+                }
+                else if(!stationAvailability.get(key) && doctorAvailability.get(key)) {
+                    //disponibilità di entrambe
+                }
+            }
+            */
+
+            MonthVO monthAvailability = new MonthVO();
+            monthAvailability.setType("AVAILABILITY");
+            monthAvailability.setYear(yearNumber);
+            monthAvailability.setMonth(monthNumber);
+
+            Calendar calendar = new GregorianCalendar();
+            calendar.set(Calendar.YEAR, yearNumber);
+            //because calendar goes from 0 to 11
+            calendar.set(Calendar.MONTH, monthNumber - 1);
+
+            //because calendar goes from 0 to 30 max
+            int maximum_day = calendar.getActualMaximum(Calendar.DAY_OF_MONTH) + 1;
+
+            for (int i = 1; i < maximum_day; i++) {
+                DayVO day = new DayVO();
+                day.setNumber(i);
+                monthAvailability.getDays().add(day);
+
+                for (String slotLabel : slotLabels) {
+                    SlotExtendedVO slot = new SlotExtendedVO();
+                    slot.setStart(slotLabel);
+                    slot.setDoctorAvailability(stationAvailability.get(day.getNumber() + "_" + slotLabel));
+                    slot.setStationAvailability(doctorAvailability.get(day.getNumber() + "_" + slotLabel));
+
+                    //FIXME: aumentare di 30 minuti la fine dello slot
+                    String[] splits = slotLabel.split(Pattern.quote("."));
+                    calendar.set(Calendar.HOUR, Integer.valueOf(splits[0]));
+                    calendar.set(Calendar.MINUTE, Integer.valueOf(splits[1]));
+                    calendar.add(Calendar.MINUTE, 30);
+                    slot.setEnd(calendar.get(Calendar.HOUR) + "." + calendar.get(Calendar.MINUTE));
+                    day.getSlots().add(slot);
+                }
+            }
+            return monthAvailability;
 
         }
         catch (Exception e) {
-
+            LOG.error(e);
+            throw new BusinessException(e);
         }
-        throw new NotImplementedException();
+
     }
 
 
@@ -278,9 +241,9 @@ public class CalendarService {
 
             for(DayVO dayVO : monthVO.getDays()) {
 
-                for(SlotVO slotVO : dayVO.getSlots()) {
+                for(SlotBaseVO slotVO : dayVO.getSlots()) {
                     Slot slot = slotDAO.find(slotVO.getId());
-                    if(slot!=null) slot.setSelected(slotVO.getSelected());
+                    if(slot!=null) slot.setSelected(((SlotVO) slotVO).getSelected());
                     slotDAO.save(slot);
                 }
             }

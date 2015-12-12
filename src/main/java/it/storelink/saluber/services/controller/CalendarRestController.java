@@ -59,7 +59,7 @@ public class CalendarRestController {
         try {
             ExtendedUser user = (ExtendedUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-            if(!user.hasAuthority("doctor") || !user.hasAuthority("station_manager"))
+            if(!user.hasAuthority("doctor") && !user.hasAuthority("station_manager"))
                 return new ResponseEntity<Long>(null, new HttpHeaders(), HttpStatus.NOT_FOUND);
 
             month_id = calendarService.update(monthVO);
@@ -106,6 +106,7 @@ public class CalendarRestController {
         return entity;
     }
 
+    /*
     @RequestMapping(value = "/save_month_station", method = RequestMethod.POST, consumes = "application/json")
     public ResponseEntity<Long> saveMonthStation(@RequestBody MonthVO monthVO) {
         ResponseEntity<Long> entity;
@@ -130,6 +131,6 @@ public class CalendarRestController {
         }
         return entity;
     }
-
+    */
 
 }
