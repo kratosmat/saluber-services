@@ -20,6 +20,9 @@ public class Booking {
     private Doctor _doctor;
     private Patient _patient;
     private Specialization _specialization;
+    private Long doctorSlot;
+    private Long stationSlot;
+
 
 
     @Id
@@ -84,4 +87,23 @@ public class Booking {
         this._specialization = specialization;
     }
 
+    @Basic
+    @Column(name = "DOCTOR_SLOT", nullable = false, insertable = true, updatable = true)
+    public Long getDoctorSlot() {
+        return doctorSlot;
+    }
+
+    public void setDoctorSlot(Long doctorSlot) {
+        this.doctorSlot = doctorSlot;
+    }
+
+    @Basic
+    @Column(name = "STATION_SLOT", nullable = false, insertable = true, updatable = true)
+    public Long getStationSlot() {
+        return stationSlot;
+    }
+
+    public void setStationSlot(Long stationSlot) {
+        this.stationSlot = stationSlot;
+    }
 }

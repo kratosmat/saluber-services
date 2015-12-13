@@ -67,6 +67,7 @@
         <property name="doctorDAO" ref="doctorDAO"/>
         <property name="patientDAO" ref="patientDAO"/>
         <property name="specializationDAO" ref="specializationDAO"/>
+        <property name="slotDAO" ref="slotDAO"/>
     </bean>
 
     <bean id="examinationService" class="it.storelink.saluber.services.service.ExaminationService" >
@@ -93,7 +94,7 @@
         <property name="monthDAO" ref="monthDAO"/>
         <property name="dayDAO" ref="dayDAO"/>
         <property name="slotDAO" ref="slotDAO"/>
-        <property name="userDAO" ref="userDAO"/>
+        <property name="bookingDAO" ref="bookingDAO"/>
     </bean>
 
     <bean id="userService" class="it.storelink.saluber.services.service.UserService">

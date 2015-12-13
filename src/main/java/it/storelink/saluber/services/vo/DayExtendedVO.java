@@ -10,10 +10,10 @@ import java.util.List;
  * Time: 16.03
  */
 
-public class DayVO {
+public class DayExtendedVO {
     private Long _id;
     private Integer _number;
-    private List<SlotVO> _slots = new LinkedList<SlotVO>();
+    private List<SlotExtendedVO> _slots = new LinkedList<SlotExtendedVO>();
     private Long _month;
 
 
@@ -33,11 +33,11 @@ public class DayVO {
         this._number = number;
     }
 
-    public List<SlotVO> getSlots() {
+    public List<SlotExtendedVO> getSlots() {
         return _slots;
     }
 
-    public void setSlots(List<SlotVO> slots) {
+    public void setSlots(List<SlotExtendedVO> slots) {
         this._slots = slots;
     }
 

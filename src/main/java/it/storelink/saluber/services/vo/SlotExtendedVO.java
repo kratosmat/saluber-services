@@ -8,6 +8,25 @@ package it.storelink.saluber.services.vo;
 
 public class SlotExtendedVO extends SlotBaseVO {
 
+    private Long doctorId;
+    private Long stationId;
+
+    public Long getDoctorId() {
+        return doctorId;
+    }
+
+    public void setDoctorId(Long doctorId) {
+        this.doctorId = doctorId;
+    }
+
+    public Long getStationId() {
+        return stationId;
+    }
+
+    public void setStationId(Long stationId) {
+        this.stationId = stationId;
+    }
+
     private Boolean doctorAvailability;
     private Boolean stationAvailability;
 

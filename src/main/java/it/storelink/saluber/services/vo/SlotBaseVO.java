@@ -6,7 +6,7 @@ package it.storelink.saluber.services.vo;
  * Time: 16.03
  */
 
-public class SlotBaseVO {
+public abstract class SlotBaseVO {
 
     protected Long _id;
     protected Long _day;

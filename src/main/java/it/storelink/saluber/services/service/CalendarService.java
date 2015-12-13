@@ -44,12 +44,22 @@ public class CalendarService {
         this.slotDAO = slotDAO;
     }
 
+    /*
     @Autowired
     private UserDAO userDAO;
 
     public void setUserDAO(UserDAO userDAO){
         this.userDAO = userDAO;
     }
+    */
+
+    @Autowired
+    private BookingDAO bookingDAO;
+
+    public void setBookingDAO(BookingDAO bookingDAO){
+        this.bookingDAO = bookingDAO;
+    }
+
 
     @Transactional
     public List<Month> months() throws BusinessException {
@@ -139,7 +149,7 @@ public class CalendarService {
 
 
     @Transactional
-    public MonthVO readAvailability(Integer yearNumber, Integer monthNumber, Long doctorId, Long stationId) throws BusinessException {
+    public MonthExtendedVO readAvailability(Integer yearNumber, Integer monthNumber, Long doctorId, Long stationId) throws BusinessException {
         try {
 
             Month monthStation = monthDAO.findByCriteria(yearNumber, monthNumber, "STATION", stationId);
@@ -154,24 +164,44 @@ public class CalendarService {
                 return null;
             }
 
+            List<Booking> bookingsByDoctor = bookingDAO.findByDoctor(doctorId);
+            Map<Long, Long> bookingsByDoctorMap = new Hashtable<Long, Long>();
+            for(Booking booking : bookingsByDoctor) {
+                bookingsByDoctorMap.put(booking.getDoctorSlot(), doctorId);
+            }
 
+            List<Booking> bookingsByStation = bookingDAO.findByStation(stationId);
+            Map<Long, Long> bookingsByStationMap = new Hashtable<Long, Long>();
+            for(Booking booking : bookingsByStation) {
+                bookingsByStationMap.put(booking.getStationSlot(), stationId);
+            }
 
             //Creazione hash per station
-            Map<String, Boolean> stationAvailability = new HashMap<String, Boolean>();
+            Map<String, Object[]> stationAvailability = new HashMap<String, Object[]>();
             for (Day day : monthStation.getDays()) {
 
                 for (Slot slot : day.getSlots()) {
                     String key = day.getNumber() + "_" + slot.getStart();
-                    stationAvailability.put(key, slot.getSelected());
+                    if(bookingsByStationMap.containsKey(slot.getId())) {
+                        stationAvailability.put(key, new Object[] {slot.getId(), false});
+                    }
+                    else {
+                        stationAvailability.put(key, new Object[] {slot.getId(), slot.getSelected()});
+                    }
                 }
             }
 
             //Creazione hash per doctor
-            Map<String, Boolean> doctorAvailability = new HashMap<String, Boolean>();
+            Map<String, Object[]> doctorAvailability = new HashMap<String, Object[]>();
             for (Day day : monthDoctor.getDays()) {
                 for (Slot slot : day.getSlots()) {
                     String key = day.getNumber() + "_" + slot.getStart();
-                    doctorAvailability.put(key, slot.getSelected());
+                    if(bookingsByDoctorMap.containsKey(slot.getId())) {
+                        doctorAvailability.put(key, new Object[] {slot.getId(), false});
+                    }
+                    else {
+                        doctorAvailability.put(key, new Object[] {slot.getId(), slot.getSelected()});
+                    }
                 }
             }
 
@@ -180,18 +210,7 @@ public class CalendarService {
                 return null;
             }
 
-            /*
-            for (String key : stationAvailability.keySet()) {
-                if(stationAvailability.get(key) && doctorAvailability.get(key)) {
-                    //disponibilità di entrambe
-                }
-                else if(!stationAvailability.get(key) && doctorAvailability.get(key)) {
-                    //disponibilità di entrambe
-                }
-            }
-            */
-
-            MonthVO monthAvailability = new MonthVO();
+            MonthExtendedVO monthAvailability = new MonthExtendedVO();
             monthAvailability.setType("AVAILABILITY");
             monthAvailability.setYear(yearNumber);
             monthAvailability.setMonth(monthNumber);
@@ -205,15 +224,19 @@ public class CalendarService {
             int maximum_day = calendar.getActualMaximum(Calendar.DAY_OF_MONTH) + 1;
 
             for (int i = 1; i < maximum_day; i++) {
-                DayVO day = new DayVO();
+                DayExtendedVO day = new DayExtendedVO();
                 day.setNumber(i);
                 monthAvailability.getDays().add(day);
 
                 for (String slotLabel : slotLabels) {
                     SlotExtendedVO slot = new SlotExtendedVO();
+
+                    slot.setStationId((Long) stationAvailability.get(day.getNumber() + "_" + slotLabel)[0]);
+                    slot.setDoctorId((Long) doctorAvailability.get(day.getNumber() + "_" + slotLabel)[0]);
+
                     slot.setStart(slotLabel);
-                    slot.setDoctorAvailability(stationAvailability.get(day.getNumber() + "_" + slotLabel));
-                    slot.setStationAvailability(doctorAvailability.get(day.getNumber() + "_" + slotLabel));
+                    slot.setDoctorAvailability((Boolean) stationAvailability.get(day.getNumber() + "_" + slotLabel)[1]);
+                    slot.setStationAvailability((Boolean) doctorAvailability.get(day.getNumber() + "_" + slotLabel)[1]);
 
                     //FIXME: aumentare di 30 minuti la fine dello slot
                     String[] splits = slotLabel.split(Pattern.quote("."));

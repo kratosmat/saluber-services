@@ -11,7 +11,10 @@ package it.storelink.saluber.services.service;
 public class BusinessException extends Exception {
 
     public BusinessException(Exception e) {
-        this.setStackTrace(e.getStackTrace());
+        super(e);
     }
 
+    public BusinessException(String message) {
+        super(message);
+    }
 }

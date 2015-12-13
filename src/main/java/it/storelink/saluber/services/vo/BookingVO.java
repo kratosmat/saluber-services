@@ -16,6 +16,8 @@ public class BookingVO {
     private Long _doctorId;
     private Long _patientId;
     private Long _specializationId;
+    private Long doctorSlot;
+    private Long stationSlot;
 
 
     public Long getId() {
@@ -64,5 +66,21 @@ public class BookingVO {
 
     public void setSpecializationId(Long _specializationId) {
         this._specializationId = _specializationId;
+    }
+
+    public Long getDoctorSlot() {
+        return doctorSlot;
+    }
+
+    public void setDoctorSlot(Long doctorSlot) {
+        this.doctorSlot = doctorSlot;
+    }
+
+    public Long getStationSlot() {
+        return stationSlot;
+    }
+
+    public void setStationSlot(Long stationSlot) {
+        this.stationSlot = stationSlot;
     }
 }

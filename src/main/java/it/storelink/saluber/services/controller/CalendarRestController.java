@@ -79,31 +79,25 @@ public class CalendarRestController {
     }
 
     @RequestMapping("/month_availability/{yearNumber}/{monthNumber}/{doctorId}/{stationId}")
-    public ResponseEntity<MonthVO> monthAvailability(
+    public ResponseEntity<?> monthAvailability(
             @PathVariable Integer yearNumber,
             @PathVariable Integer monthNumber,
             @PathVariable Long doctorId,
             @PathVariable Long stationId) {
 
-        ResponseEntity<MonthVO> entity;
         try {
             ExtendedUser user = (ExtendedUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            MonthVO month = null;
             if(user.hasAuthority("patient")) {
-                month = calendarService.readAvailability(yearNumber, monthNumber, doctorId, stationId);
+                MonthExtendedVO month = calendarService.readAvailability(yearNumber, monthNumber, doctorId, stationId);
+                return new ResponseEntity<MonthExtendedVO>(month, new HttpHeaders(), HttpStatus.OK);
             }
-            if(month==null) {
-                entity = new ResponseEntity<MonthVO>(null, new HttpHeaders(), HttpStatus.NOT_FOUND);
-            }
-            else {
-                entity = new ResponseEntity<MonthVO>(month, new HttpHeaders(), HttpStatus.OK);
-            }
+            else return new ResponseEntity<String>("", new HttpHeaders(), HttpStatus.FORBIDDEN);
+
         }
         catch (Exception e) {
-            entity = new ResponseEntity<MonthVO>(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
             LOG.error(e);
+            return new ResponseEntity<String>(e.getMessage(), new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return entity;
     }
 
     /*
